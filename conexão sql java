@@ -1,0 +1,43 @@
+// Importa o módulo 'pg' para conectar ao PostgreSQL
+const { Client } = require('pg');
+const http = require('http');
+
+// Configurações de conexão ao banco de dados
+const client = new Client({
+    user: 'postgres',
+    host: 'brashly-intent-urchin.data-1.use1.tembo.io',
+    database: 'nome_do_banco', // Substitua pelo nome do seu banco de dados
+    password: 'iALB46OgbQd7FWXe',
+    port: 5432,  // Porta padrão do PostgreSQL
+});
+
+// Função para criar o servidor HTTP
+const server = http.createServer(async (req, res) => {
+    if (req.url === '/' && req.method === 'GET') {
+        try {
+            await client.connect(); // Conecta ao banco
+            const result = await client.query('SELECT nome FROM clientes'); // Consulta SQL
+            const nomes = result.rows.map(row => row.nome); // Pega apenas o campo 'nome'
+            
+            // Retorna o HTML com a lista de nomes
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.write('<h1>Lista de Nomes:</h1><ul>');
+            nomes.forEach(nome => {
+                res.write(`<li>${nome}</li>`);
+            });
+            res.write('</ul>');
+            res.end();
+        } catch (err) {
+            console.error(err);
+            res.writeHead(500, { 'Content-Type': 'text/plain' });
+            res.end('Erro no servidor');
+        } finally {
+            await client.end(); // Fecha a conexão
+        }
+    }
+});
+
+// Inicia o servidor na porta 3000
+server.listen(3000, () => {
+    console.log('Servidor rodando em http://localhost:3000');
+});
