@@ -1,19 +1,31 @@
 
--- Copiando estrutura para tabela projeto.hhjhj
-CREATE TABLE IF NOT EXISTS `hhjhj` (
-  `Coluna 1` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- Criação da tabela de clientes
+CREATE TABLE clientes (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(50) NOT NULL,
+    sobrenome VARCHAR(50) NOT NULL,
+    telefone VARCHAR(15),
+    email VARCHAR(100)
+);
 
--- Copiando dados para a tabela projeto.hhjhj: ~0 rows (aproximadamente)
+-- Criação da tabela de dentistas
+CREATE TABLE dentistas (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(50) NOT NULL,
+    sobrenome VARCHAR(50) NOT NULL,
+    especialidade VARCHAR(100),
+    telefone VARCHAR(15),
+    email VARCHAR(100)
+);
 
--- Copiando estrutura para tabela projeto.usuarios
-CREATE TABLE IF NOT EXISTS `usuarios` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nome` varchar(100) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `senha` varchar(255) NOT NULL,
-  `data_nascimento` date DEFAULT NULL,
-  `data_criacao` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- Criação da tabela de agendamentos
+CREATE TABLE agendamentos (
+    id SERIAL PRIMARY KEY,
+    id_cliente INT NOT NULL,
+    id_dentista INT NOT NULL,
+    date TIMESTAMP NOT NULL,  -- Data do serviço
+    service TEXT,  -- Descrição do atendimento
+    status VARCHAR(20) DEFAULT 'Agendado',
+    FOREIGN KEY (id_cliente) REFERENCES clientes(id) ON DELETE CASCADE,
+    FOREIGN KEY (id_dentista) REFERENCES dentistas(id) ON DELETE CASCADE
+);
