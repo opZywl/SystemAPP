@@ -6,7 +6,7 @@ const http = require('http');
 const client = new Client({
     user: 'postgres',
     host: 'brashly-intent-urchin.data-1.use1.tembo.io',
-    database: 'nome_do_banco', // Substitua pelo nome do seu banco de dados
+    database: 'postgres',
     password: 'iALB46OgbQd7FWXe',
     port: 5432,  // Porta padrão do PostgreSQL
 });
