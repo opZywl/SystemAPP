@@ -1,0 +1,10 @@
+host: brashly-intent-urchin.data-1.use1.tembo.io
+
+user: postgres
+  
+nome banco: postgres
+
+  senha: iALB46OgbQd7FWXe
+
+porta: 5432
+  
