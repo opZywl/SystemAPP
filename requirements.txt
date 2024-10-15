@@ -1,0 +1,3 @@
+Flask
+pandas
+psycopg2-binary
