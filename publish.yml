@@ -21,12 +21,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Login to Expo
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-        run: expo login --username $EXPO_USERNAME --password $EXPO_PASSWORD
-
       - name: Publish to Expo
         env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-        run: expo publish
+          EXPO_TOKEN: f4ncOoXZ2rq1x9VaC8YhzPWPGgyqTsuYDv51ya2H
+        run: npx expo publish
