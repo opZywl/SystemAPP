@@ -20,6 +20,7 @@ export default function TabTwoScreen() {
         <ThemedText>
           This app has two screens:{' '}
           <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
+          <ThemedText type="defaultSemiBold">app/(tabs)/paciente.tsx</ThemedText>
           <ThemedText type="defaultSemiBold">app/(tabs)/agendesorriso.tsx</ThemedText>
         </ThemedText>
         <ThemedText>
