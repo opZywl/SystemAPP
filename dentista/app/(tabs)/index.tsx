@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Dimensions } from 'react-native';
+import { FontAwesome } from '@expo/vector-icons';
+
+const { width } = Dimensions.get('window');
 
 export default function LoginScreen() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
-    // Lógica de autenticação
     if (username === '' || password === '') {
       Alert.alert('Erro', 'Por favor, preencha todos os campos');
     } else {
@@ -15,90 +17,131 @@ export default function LoginScreen() {
   };
 
   const handleForgotPassword = () => {
-    // Lógica de recuperação de senha
     Alert.alert('Recuperação de Senha', 'Um link de recuperação foi enviado ao seu e-mail.');
   };
 
+  const handleRegister = () => {
+    Alert.alert('Registrar', 'Funcionalidade de registro em breve!');
+  };
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Bem-vindo!</Text>
-      <Text style={styles.subtitle}>Faça login para continuar</Text>
-      
-      <TextInput
-        style={styles.input}
-        placeholder="Usuário"
-        placeholderTextColor="#aaa"
-        value={username}
-        onChangeText={setUsername}
-      />
-      
-      <TextInput
-        style={styles.input}
-        placeholder="Senha"
-        placeholderTextColor="#aaa"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-      
-      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-        <Text style={styles.loginButtonText}>Entrar</Text>
-      </TouchableOpacity>
-      
-      <TouchableOpacity onPress={handleForgotPassword}>
-        <Text style={styles.forgotPassword}>Esqueceu sua senha?</Text>
-      </TouchableOpacity>
+    <View style={styles.outerContainer}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Login</Text>
+
+        <Text style={styles.label}>E-mail</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Coloque seu e-mail"
+          placeholderTextColor="#aaa"
+          value={username}
+          onChangeText={setUsername}
+        />
+        <Text style={styles.required}>Obrigatório</Text>
+
+        <Text style={styles.label}>Senha</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Coloque sua senha"
+          placeholderTextColor="#aaa"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
+        <Text style={styles.required}>Obrigatório</Text>
+
+        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+          <Text style={styles.loginButtonText}>Login</Text>
+        </TouchableOpacity>
+
+        <View style={styles.linksContainer}>
+          <TouchableOpacity onPress={handleForgotPassword} style={styles.link}>
+            <FontAwesome name="lock" size={16} color="#333" />
+            <Text style={styles.linkText}> Esqueceu a senha?</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity onPress={handleRegister} style={styles.link}>
+            <FontAwesome name="key" size={16} color="#333" />
+            <Text style={styles.linkText}> Registre-se aqui</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  outerContainer: {
     flex: 1,
     justifyContent: 'center',
-    paddingHorizontal: 32,
-    backgroundColor: '#f5f5f5',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  },
+  container: {
+    width: width > 500 ? 400 : '90%', // Largura máxima de 400 para telas maiores
+    padding: 20,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
   },
   title: {
-    fontSize: 32,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#333',
-    marginBottom: 8,
+    marginBottom: 16,
     textAlign: 'center',
   },
-  subtitle: {
+  label: {
     fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-    marginBottom: 32,
+    color: '#333',
+    marginBottom: 4,
   },
   input: {
     height: 48,
-    borderColor: '#ccc',
+    borderColor: '#ddd',
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 16,
-    marginBottom: 16,
     fontSize: 16,
-    backgroundColor: '#fff',
+    backgroundColor: '#f9f9f9',
+    marginBottom: 8,
+  },
+  required: {
+    fontSize: 12,
+    color: '#aaa',
+    marginBottom: 16,
   },
   loginButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#000',
     borderRadius: 8,
     height: 48,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 16,
+    marginTop: 8,
   },
   loginButtonText: {
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
   },
-  forgotPassword: {
-    marginTop: 16,
-    textAlign: 'center',
-    color: '#4CAF50',
+  linksContainer: {
+    marginTop: 32,
+    borderTopWidth: 1,
+    borderTopColor: '#ddd',
+    paddingTop: 16,
+  },
+  link: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 8,
+  },
+  linkText: {
     fontSize: 16,
+    color: '#333',
+    marginLeft: 8,
   },
 });
