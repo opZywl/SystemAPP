@@ -3,13 +3,13 @@ import { StyleSheet, Text, View, FlatList, Button, TouchableOpacity, Image } fro
 
 export default function AgendaScreen() {
   const [pacientesAgendados, setPacientesAgendados] = useState([
-    { id: '1', nome: 'Olivia Sampaio', hora: '10:00 AM', servico: 'Limpeza' },
-    { id: '2', nome: 'Lucas de Almeida', hora: '11:30 AM', servico: 'Obturação' },
+    { id: '1', nome: 'paciente 1', hora: '10:00 AM', servico: 'Limpeza' },
+    { id: '2', nome: 'paciente 2', hora: '11:30 AM', servico: 'Obturação' },
   ]);
 
   const [proximosAgendamentos, setProximosAgendamentos] = useState([
-    { id: '3', nome: 'Caio Gabriel', hora: '2:00 PM' },
-    { id: '4', nome: 'Matheus Henrique', hora: '3:30 PM' },
+    { id: '3', nome: 'paciente 1', hora: '2:00 PM' },
+    { id: '4', nome: 'paciente 2 ', hora: '3:30 PM' },
   ]);
 
   const [servicosDisponiveis, setServicosDisponiveis] = useState([
