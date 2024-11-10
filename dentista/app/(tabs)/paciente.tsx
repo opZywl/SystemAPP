@@ -1,148 +1,190 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, FlatList, Button, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, Dimensions } from 'react-native';
+import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
+
+const { width } = Dimensions.get('window');
 
 export default function AgendaScreen() {
   const [pacientesAgendados, setPacientesAgendados] = useState([
-    { id: '1', nome: 'paciente 1', hora: '10:00 AM', servico: 'Limpeza' },
-    { id: '2', nome: 'paciente 2', hora: '11:30 AM', servico: 'Obturação' },
+    { id: '1', nome: 'Paciente 1', servico: 'Limpeza', hora: '10:00 AM', email: 'xxx@example.com' },
+    { id: '2', nome: 'Paciente 2', servico: 'Obturação', hora: '11:30 AM', email: 'zzz@example.com' },
   ]);
 
   const [proximosAgendamentos, setProximosAgendamentos] = useState([
-    { id: '3', nome: 'paciente 1', hora: '2:00 PM' },
-    { id: '4', nome: 'paciente 2 ', hora: '3:30 PM' },
+    { id: '3', nome: 'Paciente 3', servico: 'Limpeza', hora: '2:00 PM', email: 'yyy@example.com' },
+    { id: '4', nome: 'Paciente 4', servico: 'Obturação', hora: '3:30 PM', email: 'zzz@example.com' },
   ]);
 
   const [servicosDisponiveis, setServicosDisponiveis] = useState([
-    { id: '1', nome: 'Limpeza', preco: 'R$50', duracao: '30 mins', image: require('../../assets/images/dente.avif') },
-    { id: '2', nome: 'Obturação', preco: 'R$100', duracao: '45 mins', image: require('../../assets/images/dente.avif') },
+    { id: '1', nome: 'Limpeza', preco: 'R$50', duracao: '30 mins', icon: 'tooth-outline' },
+    { id: '2', nome: 'Obturação', preco: 'R$100', duracao: '45 mins', icon: 'toothbrush-paste' },
   ]);
 
   const renderPaciente = ({ item }) => (
     <View style={styles.pacienteItem}>
-      <Text style={styles.pacienteNome}>{item.nome}</Text>
-      <Text style={styles.pacienteServico}>{item.servico}</Text>
+      <View style={styles.pacienteInfo}>
+        <Text style={styles.pacienteNome}>{item.nome}</Text>
+        <Text style={styles.pacienteServico}>{item.servico}</Text>
+      </View>
       <Text style={styles.pacienteHora}>{item.hora}</Text>
+      <TouchableOpacity style={styles.infoButton}>
+        <FontAwesome name="info-circle" size={20} color="#555" />
+      </TouchableOpacity>
     </View>
   );
 
   const renderServico = ({ item }) => (
     <View style={styles.servicoItem}>
-      <Image source={item.image} style={styles.servicoImage} />
-      <Text style={styles.servicoNome}>{item.nome}</Text>
+      <MaterialCommunityIcons name={item.icon} size={40} color="#007bff" style={styles.servicoIcon} />
       <Text style={styles.servicoPreco}>{item.preco}</Text>
+      <Text style={styles.servicoNome}>{item.nome}</Text>
       <Text style={styles.servicoDuracao}>{item.duracao}</Text>
     </View>
   );
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.sectionTitle}>Pacientes Agendados</Text>
-      <FlatList
-        data={pacientesAgendados}
-        renderItem={renderPaciente}
-        keyExtractor={(item) => item.id}
-        style={styles.list}
-      />
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Novo Agendamento</Text>
-      </TouchableOpacity>
+    <View style={styles.outerContainer}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Agenda</Text>
 
-      <Text style={styles.sectionTitle}>Serviços Disponíveis</Text>
-      <FlatList
-        data={servicosDisponiveis}
-        renderItem={renderServico}
-        keyExtractor={(item) => item.id}
-        horizontal
-        style={styles.list}
-      />
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Mais Serviços</Text>
-      </TouchableOpacity>
+        <Text style={styles.sectionTitle}>Pacientes Agendados</Text>
+        <FlatList
+          data={pacientesAgendados}
+          renderItem={renderPaciente}
+          keyExtractor={(item) => item.id}
+          style={styles.list}
+        />
+        <TouchableOpacity style={styles.agendarButton}>
+          <Text style={styles.agendarButtonText}>Novo Agendamento</Text>
+        </TouchableOpacity>
 
-      <Text style={styles.sectionTitle}>Próximos Agendamentos</Text>
-      <FlatList
-        data={proximosAgendamentos}
-        renderItem={renderPaciente}
-        keyExtractor={(item) => item.id}
-        style={styles.list}
-      />
+        <Text style={styles.sectionTitle}>Serviços Disponíveis</Text>
+        <FlatList
+          data={servicosDisponiveis}
+          renderItem={renderServico}
+          keyExtractor={(item) => item.id}
+          horizontal
+          style={styles.servicosList}
+        />
+        <TouchableOpacity style={styles.agendarButton}>
+          <Text style={styles.agendarButtonText}>Mais Serviços</Text>
+        </TouchableOpacity>
+
+        <Text style={styles.sectionTitle}>Próximos Agendamentos</Text>
+        <FlatList
+          data={proximosAgendamentos}
+          renderItem={renderPaciente}
+          keyExtractor={(item) => item.id}
+          style={styles.list}
+        />
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  outerContainer: {
     flex: 1,
-    padding: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#f5f5f5',
+  },
+  container: {
+    width: width > 600 ? 500 : '90%', // Largura máxima de 500 para telas maiores
+    padding: 20,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 5,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 20,
+    textAlign: 'center',
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginVertical: 10,
+    color: '#333',
+    marginBottom: 10,
   },
   list: {
     marginVertical: 10,
   },
   pacienteItem: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 15,
-    backgroundColor: '#ffffff',
-    borderRadius: 10,
-    marginVertical: 5,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 2,
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  pacienteInfo: {
+    flex: 1,
   },
   pacienteNome: {
     fontSize: 16,
     fontWeight: '600',
+    color: '#333',
   },
   pacienteServico: {
-    color: '#888888',
+    fontSize: 14,
+    color: '#888',
   },
   pacienteHora: {
-    color: '#555555',
+    fontSize: 14,
+    color: '#555',
+    marginRight: 10,
+  },
+  infoButton: {
+    padding: 5,
+  },
+  agendarButton: {
+    backgroundColor: '#007bff',
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  agendarButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  servicosList: {
+    marginVertical: 10,
   },
   servicoItem: {
-    width: 120,
+    width: 150,
     padding: 10,
     backgroundColor: '#ffffff',
     borderRadius: 10,
-    marginRight: 10,
+    marginHorizontal: 5,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 2,
   },
-  servicoImage: {
-    width: 60,
-    height: 60,
+  servicoIcon: {
     marginBottom: 5,
+  },
+  servicoPreco: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#007bff',
   },
   servicoNome: {
     fontSize: 14,
     fontWeight: 'bold',
-  },
-  servicoPreco: {
-    color: '#888888',
+    color: '#333',
   },
   servicoDuracao: {
-    color: '#555555',
-  },
-  button: {
-    backgroundColor: '#007bff',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginVertical: 10,
-  },
-  buttonText: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 12,
+    color: '#888',
   },
 });
