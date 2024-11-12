@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, Modal, FlatList, Dimensions } from 'react-native';
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export default function AgendamentoScreen() {
   const [nome, setNome] = useState('');
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
   },
   container: {
-    width: width > 600 ? 500 : '90%', // Largura máxima de 500 para telas maiores
+    width: width > 600 ? 450 : '90%', // Adapta largura para telas mais quadradas e largas
     padding: 20,
     backgroundColor: '#fff',
     borderRadius: 10,
