@@ -11,7 +11,7 @@ export default function PacientesScreen() {
     { id: '3', nome: 'paciente', email: 'paciente@example.com', telefone: '(19) 9 9999-9999' },
   ]);
 
-  const renderPacienteItem = ({ itwem }) => (
+  const renderPacienteItem = ({ item }) => (
     <View style={styles.pacienteItem}>
       <FontAwesome name="user-circle" size={24} color="#007bff" />
       <View style={styles.pacienteInfo}>
