@@ -6,9 +6,9 @@ const { width, height } = Dimensions.get('window');
 
 export default function PacientesScreen() {
   const [pacientes, setPacientes] = useState([
-    { id: '1', nome: 'Olivia Sampaio', email: 'olisp@example.com', telefone: '(19) 9 9999-9999' },
-    { id: '2', nome: 'Lucas de Lima', email: 'lucasla@example.com', telefone: '(19) 9 9999-9999' },
-    { id: '3', nome: 'Carlos Silva', email: 'carloss@example.com', telefone: '(19) 9 9999-9999' },
+    { id: '1', nome: 'paciente', email: 'paciente@example.com', telefone: '(19) 9 9999-9999' },
+    { id: '2', nome: 'paciente', email: 'paciente@example.com', telefone: '(19) 9 9999-9999' },
+    { id: '3', nome: 'paciente', email: 'paciente@example.com', telefone: '(19) 9 9999-9999' },
   ]);
 
   const renderPacienteItem = ({ item }) => (
