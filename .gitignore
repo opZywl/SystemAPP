@@ -1,0 +1,63 @@
+# Ignorar arquivos de dependências do Node.js
+node_modules/
+package-lock.json
+yarn.lock
+
+# Ignorar arquivos de build do React Native
+/android/app/build/
+/ios/Pods/
+/ios/build/
+
+# Ignorar arquivos específicos do React Native
+*.iml
+*.hprof
+*.swp
+.DS_Store
+.env
+*.log
+.vscode/
+.idea/
+android/.gradle/
+android/.idea/
+android/local.properties
+android/*.keystore
+*.lock
+
+# Ignorar arquivos de sistema
+Thumbs.db
+*.bak
+*.tmp
+
+# Ignorar arquivos Python
+__pycache__/
+*.py[cod]
+*.env
+.env
+*.sqlite3
+*.pkl
+*.egg-info/
+
+# Ignorar arquivos de logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Ignorar virtual environments do Python
+env/
+venv/
+.virtualenv/
+
+# Ignorar arquivos gerados por IDEs
+*.idea/
+*.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw*
+
+# Ignorar arquivos do sistema operacional
+*.DS_Store
+*.AppleDouble

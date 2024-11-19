@@ -1,41 +1,72 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, Modal, FlatList, Dimensions } from 'react-native';
-import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+  Dimensions,
+} from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 
 export default function AgendamentoScreen() {
   const [nome, setNome] = useState('');
+  const [sobrenome, setSobrenome] = useState('');
+  const [telefone, setTelefone] = useState('');
+  const [email, setEmail] = useState('');
   const [dataHora, setDataHora] = useState('');
   const [servico, setServico] = useState('');
-  const [modalVisible, setModalVisible] = useState(false);
-  const [convenio, setConvenio] = useState('');
 
-  const servicosDisponiveis = [
-    { id: '1', nome: 'Limpeza', icon: 'tooth-outline' },
-    { id: '2', nome: 'Restauração', icon: 'toothbrush-paste' },
-  ];
-
-  const handleAgendar = () => {
-    if (!nome || !dataHora || !servico) {
-      Alert.alert('Erro', 'Por favor, preencha todos os campos.');
+  const handleSubmit = async () => {
+    console.log("Função handleSubmit chamada");
+    if (!nome || !sobrenome || !telefone || !email || !dataHora || !servico) {
+      let missingFields = [];
+      if (!nome) missingFields.push('Nome');
+      if (!sobrenome) missingFields.push('Sobrenome');
+      if (!telefone) missingFields.push('Telefone');
+      if (!email) missingFields.push('E-mail');
+      if (!dataHora) missingFields.push('Data e Hora');
+      if (!servico) missingFields.push('Serviço');
+      
+      Alert.alert('Erro', `Por favor, preencha os seguintes campos: ${missingFields.join(', ')}`);
       return;
     }
-    Alert.alert('Agendamento Realizado', `Nome: ${nome}\nData e Hora: ${dataHora}\nServiço: ${servico}`);
+  
+    const clienteData = { nome, sobrenome, telefone, email, dataHora, servico };
+  
+    try {
+      console.log("Tentando enviar dados para o servidor...");
+      const response = await fetch('http://127.0.0.1:5000/clientes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(clienteData),
+      });
+  
+      if (response.ok) {
+        const result = await response.json();
+        console.log(result);
+        Alert.alert('Sucesso', result.message || 'Agendamento realizado com sucesso!');
+ 
+        setNome('');
+        setSobrenome('');
+        setTelefone('');
+        setEmail('');
+        setDataHora('');
+        setServico('');
+      } else {
+        const error = await response.json();
+        Alert.alert('Erro', error.message || 'Falha ao cadastrar cliente');
+      }
+    } catch (error) {
+      console.error("Erro ao conectar com o servidor", error);
+      Alert.alert('Erro', 'Não foi possível conectar ao servidor');
+    }
   };
-
-  const renderServicoItem = ({ item }) => (
-    <TouchableOpacity
-      style={[styles.servicoItem, servico === item.nome && styles.servicoItemSelecionado]}
-      onPress={() => {
-        setServico(item.nome);
-        setModalVisible(false);
-      }}
-    >
-      <MaterialCommunityIcons name={item.icon} size={24} color="#007bff" />
-      <Text style={styles.servicoText}>{item.nome}</Text>
-    </TouchableOpacity>
-  );
+  
 
   return (
     <View style={styles.outerContainer}>
@@ -44,9 +75,27 @@ export default function AgendamentoScreen() {
 
         <TextInput
           style={styles.input}
-          placeholder="Nome do Paciente"
+          placeholder="Nome"
           value={nome}
           onChangeText={setNome}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Sobrenome"
+          value={sobrenome}
+          onChangeText={setSobrenome}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Telefone"
+          value={telefone}
+          onChangeText={setTelefone}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="E-mail"
+          value={email}
+          onChangeText={setEmail}
         />
         <TextInput
           style={styles.input}
@@ -54,71 +103,17 @@ export default function AgendamentoScreen() {
           value={dataHora}
           onChangeText={setDataHora}
         />
-
-        <Text style={styles.sectionTitle}>Convênios:</Text>
-        <View style={styles.conveniosContainer}>
-          <TouchableOpacity
-            style={[styles.convenioButton, convenio === 'Unimed' && styles.convenioButtonSelecionado]}
-            onPress={() => setConvenio('Unimed')}
-          >
-            <Text style={styles.convenioButtonText}>Unimed</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.convenioButton, convenio === 'SUS' && styles.convenioButtonSelecionado]}
-            onPress={() => setConvenio('SUS')}
-          >
-            <Text style={styles.convenioButtonText}>Bradesco</Text>
-          </TouchableOpacity>
-        </View>
-
-        <Text style={styles.sectionTitle}>Serviços</Text>
-        <FlatList
-          data={servicosDisponiveis}
-          renderItem={renderServicoItem}
-          keyExtractor={(item) => item.id}
-          horizontal
-          style={styles.servicosList}
+        <TextInput
+          style={styles.input}
+          placeholder="Serviço"
+          value={servico}
+          onChangeText={setServico}
         />
-
-        <Text style={styles.sectionTitle}>Visualize o agendamento</Text>
-        <View style={styles.agendamentoPreview}>
-          <FontAwesome name="calendar" size={40} color="#007bff" />
-          <View style={styles.agendamentoInfo}>
-            <Text style={styles.pacienteNome}>Paciente</Text>
-            <Text style={styles.agendamentoData}>10/11/2024 às 00:00</Text>
-            <TouchableOpacity style={styles.infoButton}>
-              <FontAwesome name="info-circle" size={20} color="#555" />
-              <Text style={styles.infoButtonText}>Detalhes</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        <TouchableOpacity style={styles.agendarButton} onPress={handleAgendar}>
-          <Text style={styles.agendarButtonText}>Agendar consulta</Text>
+        
+        <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+          <Text style={styles.buttonText}>Agendar Consulta</Text>
         </TouchableOpacity>
       </View>
-
-      {/* Modal para selecionar o serviço */}
-      <Modal
-        visible={modalVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Selecione um Serviço</Text>
-            <FlatList
-              data={servicosDisponiveis}
-              renderItem={renderServicoItem}
-              keyExtractor={(item) => item.id}
-            />
-            <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeButton}>
-              <Text style={styles.closeButtonText}>Fechar</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
     </View>
   );
 }
@@ -128,142 +123,43 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#f0f0f0',
   },
   container: {
-    width: width > 600 ? 450 : '90%', // Adapta largura para telas mais quadradas e largas
-    padding: 20,
+    width: width * 0.8,
     backgroundColor: '#fff',
-    borderRadius: 10,
+    padding: 20,
+    borderRadius: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
     elevation: 5,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 20,
     textAlign: 'center',
+    marginBottom: 20,
   },
   input: {
+    height: 45,
+    borderColor: '#ccc',
     borderWidth: 1,
-    borderColor: '#ddd',
-    padding: 15,
     borderRadius: 5,
-    marginBottom: 10,
-    backgroundColor: '#fff',
-  },
-  sectionTitle: {
+    marginBottom: 15,
+    paddingLeft: 10,
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-    marginVertical: 10,
   },
-  conveniosContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 20,
-  },
-  convenioButton: {
-    padding: 10,
-    backgroundColor: '#f5f5f5',
+  button: {
+    backgroundColor: '#28a745',
+    paddingVertical: 12,
     borderRadius: 5,
-    width: '48%',
-    alignItems: 'center',
+    marginTop: 20,
   },
-  convenioButtonSelecionado: {
-    backgroundColor: '#007bff',
-  },
-  convenioButtonText: {
-    color: '#333',
-  },
-  servicosList: {
-    marginBottom: 20,
-  },
-  servicoItem: {
-    width: 100,
-    padding: 15,
-    backgroundColor: '#f5f5f5',
-    borderRadius: 10,
-    alignItems: 'center',
-    marginHorizontal: 5,
-  },
-  servicoItemSelecionado: {
-    backgroundColor: '#d0e7ff',
-  },
-  servicoText: {
-    marginTop: 5,
-    fontSize: 14,
-    color: '#333',
-  },
-  agendamentoPreview: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f9f9f9',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 20,
-  },
-  agendamentoInfo: {
-    marginLeft: 15,
-  },
-  pacienteNome: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  agendamentoData: {
-    color: '#888',
-  },
-  infoButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 5,
-  },
-  infoButtonText: {
-    marginLeft: 5,
-    color: '#007bff',
-    fontSize: 14,
-  },
-  agendarButton: {
-    backgroundColor: '#007bff',
-    padding: 15,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  agendarButtonText: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContent: {
-    width: 300,
-    padding: 20,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  closeButton: {
-    marginTop: 10,
-    padding: 10,
-    backgroundColor: '#007bff',
-    borderRadius: 5,
-  },
-  closeButtonText: {
+  buttonText: {
     color: '#fff',
+    textAlign: 'center',
+    fontSize: 16,
   },
 });
