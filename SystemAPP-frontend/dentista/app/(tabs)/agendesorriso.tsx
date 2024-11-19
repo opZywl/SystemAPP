@@ -9,7 +9,7 @@ import {
   Dimensions,
 } from 'react-native';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 export default function AgendamentoScreen() {
   const [nome, setNome] = useState('');
@@ -20,7 +20,6 @@ export default function AgendamentoScreen() {
   const [servico, setServico] = useState('');
 
   const handleSubmit = async () => {
-    console.log("Função handleSubmit chamada");
     if (!nome || !sobrenome || !telefone || !email || !dataHora || !servico) {
       let missingFields = [];
       if (!nome) missingFields.push('Nome');
@@ -29,15 +28,17 @@ export default function AgendamentoScreen() {
       if (!email) missingFields.push('E-mail');
       if (!dataHora) missingFields.push('Data e Hora');
       if (!servico) missingFields.push('Serviço');
-      
-      Alert.alert('Erro', `Por favor, preencha os seguintes campos: ${missingFields.join(', ')}`);
+
+      Alert.alert(
+        'Erro',
+        `Por favor, preencha os seguintes campos: ${missingFields.join(', ')}`
+      );
       return;
     }
-  
+
     const clienteData = { nome, sobrenome, telefone, email, dataHora, servico };
-  
+
     try {
-      console.log("Tentando enviar dados para o servidor...");
       const response = await fetch('http://127.0.0.1:5000/clientes', {
         method: 'POST',
         headers: {
@@ -45,12 +46,14 @@ export default function AgendamentoScreen() {
         },
         body: JSON.stringify(clienteData),
       });
-  
+
       if (response.ok) {
         const result = await response.json();
-        console.log(result);
-        Alert.alert('Sucesso', result.message || 'Agendamento realizado com sucesso!');
- 
+        Alert.alert(
+          'Sucesso',
+          result.message || 'Agendamento realizado com sucesso!'
+        );
+
         setNome('');
         setSobrenome('');
         setTelefone('');
@@ -62,11 +65,9 @@ export default function AgendamentoScreen() {
         Alert.alert('Erro', error.message || 'Falha ao cadastrar cliente');
       }
     } catch (error) {
-      console.error("Erro ao conectar com o servidor", error);
       Alert.alert('Erro', 'Não foi possível conectar ao servidor');
     }
   };
-  
 
   return (
     <View style={styles.outerContainer}>
@@ -109,7 +110,7 @@ export default function AgendamentoScreen() {
           value={servico}
           onChangeText={setServico}
         />
-        
+
         <TouchableOpacity style={styles.button} onPress={handleSubmit}>
           <Text style={styles.buttonText}>Agendar Consulta</Text>
         </TouchableOpacity>
@@ -123,26 +124,29 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#f5f5f5',
   },
   container: {
-    width: width * 0.8,
+    width: width > 600 ? 500 : '90%', // Largura máxima para telas maiores
     backgroundColor: '#fff',
     padding: 20,
-    borderRadius: 8,
+    borderRadius: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
     elevation: 5,
+    alignItems: 'center', // Centraliza o conteúdo interno
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
+    color: '#333',
     marginBottom: 20,
   },
   input: {
+    width: '100%', // Ocupa toda a largura do container
     height: 45,
     borderColor: '#ccc',
     borderWidth: 1,
@@ -150,16 +154,19 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     paddingLeft: 10,
     fontSize: 16,
+    backgroundColor: '#f9f9f9',
   },
   button: {
     backgroundColor: '#007bff',
     paddingVertical: 12,
     borderRadius: 5,
+    width: '100%', // Ocupa toda a largura do container
+    alignItems: 'center',
     marginTop: 20,
   },
   buttonText: {
     color: '#fff',
-    textAlign: 'center',
     fontSize: 16,
+    fontWeight: 'bold',
   },
 });
