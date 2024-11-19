@@ -4,7 +4,7 @@ user: postgres
   
 nome banco: postgres
 
-  senha: iALB46OgbQd7FWXe
+senha: iALB46OgbQd7FWXe
 
 porta: 5432
   
