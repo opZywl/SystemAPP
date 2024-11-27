@@ -1,4 +1,5 @@
 import psycopg2
+from psycopg2.extras import RealDictCursor
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
@@ -14,22 +15,21 @@ DB_CONFIG = {
 }
 
 
-@app.route('/clientes', methods=['POST'])
+@app.route('/create_clientes', methods=['POST'])
 def create_cliente_route():
     try:
         data = request.get_json()
-        print(f"Dados recebidos: {data}")  # Log para verificar os dados recebidos
         if not data:
             return jsonify({"message": "Dados inválidos"}), 400
-        
+
         nome = data.get('nome')
         sobrenome = data.get('sobrenome')
         telefone = data.get('telefone')
         email = data.get('email')
-        datahora = data.get('datahora')  
+        datahora = data.get('datahora')
         servico = data.get('servico')
 
-        if not nome or not sobrenome or not telefone or not email or not datahora or not servico:
+        if not all([nome, sobrenome, telefone, email, datahora, servico]):
             return jsonify({"message": "Todos os campos são obrigatórios."}), 400
 
         if is_email_registered(email):
@@ -43,14 +43,15 @@ def create_cliente_route():
         return jsonify({"message": "Erro ao criar cliente"}), 500
 
 
+
 @app.route('/clientes', methods=['GET'])
 def get_clientes():
     try:
         conn = get_connection()
-        with conn.cursor() as cursor:
+        with conn.cursor(cursor_factory=RealDictCursor) as cursor:
             cursor.execute("SELECT * FROM clientes")
             clientes = cursor.fetchall()
-            return jsonify(clientes), 200
+            return jsonify(clientes), 200  
     except Exception as e:
         print(f"Erro ao obter clientes: {e}")
         return jsonify({"message": "Erro ao obter clientes"}), 500
@@ -60,11 +61,11 @@ def get_clientes():
 def get_cliente(id):
     try:
         conn = get_connection()
-        with conn.cursor() as cursor:
+        with conn.cursor(cursor_factory=RealDictCursor) as cursor:
             cursor.execute("SELECT * FROM clientes WHERE id = %s", (id,))
             cliente = cursor.fetchone()
             if cliente:
-                return jsonify(cliente), 200
+                return jsonify(cliente), 200  
             else:
                 return jsonify({"message": "Cliente não encontrado"}), 404
     except Exception as e:
@@ -96,10 +97,10 @@ def update_cliente(id):
         sobrenome = data.get('sobrenome')
         telefone = data.get('telefone')
         email = data.get('email')
-        datahora = data.get('datahora')  
+        datahora = data.get('datahora')
         servico = data.get('servico')
 
-        if not nome or not sobrenome or not telefone or not email or not datahora or not servico:
+        if not all([nome, sobrenome, telefone, email, datahora, servico]):
             return jsonify({"message": "Todos os campos são obrigatórios."}), 400
 
         conn = get_connection()
@@ -122,17 +123,14 @@ def is_email_registered(email):
         cursor.execute("SELECT 1 FROM clientes WHERE email = %s", (email,))
         return cursor.fetchone() is not None
 
-
 def create_cliente(nome, sobrenome, telefone, email, datahora, servico):
     conn = get_connection()
     with conn.cursor() as cursor:
-        create_cliente_query = """
+        cursor.execute("""
         INSERT INTO clientes (nome, sobrenome, telefone, email, datahora, servico) 
         VALUES (%s, %s, %s, %s, %s, %s);
-        """
-        cursor.execute(create_cliente_query, (nome, sobrenome, telefone, email, datahora, servico))
+        """, (nome, sobrenome, telefone, email, datahora, servico))
         conn.commit()
-
 
 def get_connection():
     return psycopg2.connect(**DB_CONFIG)

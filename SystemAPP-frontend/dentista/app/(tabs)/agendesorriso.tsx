@@ -21,25 +21,21 @@ export default function AgendamentoScreen() {
 
   const handleSubmit = async () => {
     if (!nome || !sobrenome || !telefone || !email || !dataHora || !servico) {
-      let missingFields = [];
-      if (!nome) missingFields.push('Nome');
-      if (!sobrenome) missingFields.push('Sobrenome');
-      if (!telefone) missingFields.push('Telefone');
-      if (!email) missingFields.push('E-mail');
-      if (!dataHora) missingFields.push('Data e Hora');
-      if (!servico) missingFields.push('Serviço');
-
-      Alert.alert(
-        'Erro',
-        `Por favor, preencha os seguintes campos: ${missingFields.join(', ')}`
-      );
+      Alert.alert('Erro', 'Todos os campos são obrigatórios.');
       return;
     }
 
-    const clienteData = { nome, sobrenome, telefone, email, dataHora, servico };
+    const clienteData = {
+      nome,
+      sobrenome,
+      telefone,
+      email,
+      datahora: dataHora,
+      servico,
+    };
 
     try {
-      const response = await fetch('http://127.0.0.1:5000/clientes', {
+      const response = await fetch('http://127.0.0.1:5000/create_clientes', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -49,11 +45,7 @@ export default function AgendamentoScreen() {
 
       if (response.ok) {
         const result = await response.json();
-        Alert.alert(
-          'Sucesso',
-          result.message || 'Agendamento realizado com sucesso!'
-        );
-
+        Alert.alert('Sucesso', result.message || 'Cliente cadastrado com sucesso!');
         setNome('');
         setSobrenome('');
         setTelefone('');
@@ -72,8 +64,7 @@ export default function AgendamentoScreen() {
   return (
     <View style={styles.outerContainer}>
       <View style={styles.container}>
-        <Text style={styles.title}>AgendeSorriso</Text>
-
+        <Text style={styles.title}>Cadastro de Cliente</Text>
         <TextInput
           style={styles.input}
           placeholder="Nome"
@@ -100,7 +91,7 @@ export default function AgendamentoScreen() {
         />
         <TextInput
           style={styles.input}
-          placeholder="Data e Hora"
+          placeholder="Data e Hora (YYYY-MM-DD HH:mm:ss)"
           value={dataHora}
           onChangeText={setDataHora}
         />
@@ -110,9 +101,8 @@ export default function AgendamentoScreen() {
           value={servico}
           onChangeText={setServico}
         />
-
         <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-          <Text style={styles.buttonText}>Agendar Consulta</Text>
+          <Text style={styles.buttonText}>Cadastrar</Text>
         </TouchableOpacity>
       </View>
     </View>

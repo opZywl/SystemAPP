@@ -1,15 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, FlatList, Dimensions, TouchableOpacity } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import axios from 'axios'; 
 
 const { width, height } = Dimensions.get('window');
 
 export default function PacientesScreen() {
-  const [pacientes, setPacientes] = useState([
-    { id: '1', nome: 'paciente', email: 'paciente@example.com', telefone: '(19) 9 9999-9999' },
-    { id: '2', nome: 'paciente', email: 'paciente@example.com', telefone: '(19) 9 9999-9999' },
-    { id: '3', nome: 'paciente', email: 'paciente@example.com', telefone: '(19) 9 9999-9999' },
-  ]);
+  const [pacientes, setPacientes] = useState([]); 
+
+
+  const fetchPacientes = async () => {
+    try {
+      const response = await axios.get('http://127.0.0.1:5000/clientes'); 
+      setPacientes(response.data); 
+    } catch (error) {
+      console.error('Erro ao buscar pacientes:', error);
+    }
+  };
+
+
+  useEffect(() => {
+    fetchPacientes();
+  }, []); 
+
 
   const renderPacienteItem = ({ item }) => (
     <View style={styles.pacienteItem}>
@@ -23,7 +36,7 @@ export default function PacientesScreen() {
   );
 
   const handleCadastrarPaciente = () => {
-    // Aqui você pode adicionar lógica para abrir um modal ou navegar para uma tela de cadastro
+  
     console.log('Cadastrar paciente');
   };
 
@@ -34,10 +47,9 @@ export default function PacientesScreen() {
         <FlatList
           data={pacientes}
           renderItem={renderPacienteItem}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.id.toString()} 
         />
-        
-        {/* Botão Cadastrar Paciente */}
+
         <TouchableOpacity style={styles.cadastrarButton} onPress={handleCadastrarPaciente}>
           <Text style={styles.cadastrarButtonText}>Cadastrar Paciente</Text>
         </TouchableOpacity>
@@ -54,7 +66,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
   },
   container: {
-    width: width > 600 ? 450 : '90%', // Adapta largura para telas mais quadradas e largas
+    width: width > 600 ? 450 : '90%', 
     padding: 20,
     backgroundColor: '#fff',
     borderRadius: 10,
