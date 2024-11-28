@@ -24,7 +24,7 @@ export default function AgendamentoScreen() {
       Alert.alert('Erro', 'Todos os campos são obrigatórios.');
       return;
     }
-
+  
     const clienteData = {
       nome,
       sobrenome,
@@ -33,16 +33,17 @@ export default function AgendamentoScreen() {
       datahora: dataHora,
       servico,
     };
-
+  
     try {
-      const response = await fetch('http://127.0.0.1:5000/create_clientes', {
+
+      const response = await fetch('http://192.168.18.8:5000/create_clientes', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(clienteData),
       });
-
+  
       if (response.ok) {
         const result = await response.json();
         Alert.alert('Sucesso', result.message || 'Cliente cadastrado com sucesso!');
@@ -60,6 +61,7 @@ export default function AgendamentoScreen() {
       Alert.alert('Erro', 'Não foi possível conectar ao servidor');
     }
   };
+  
 
   return (
     <View style={styles.outerContainer}>
@@ -117,7 +119,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
   },
   container: {
-    width: width > 600 ? 500 : '90%', // Largura máxima para telas maiores
+    width: width > 600 ? 500 : '90%',
     backgroundColor: '#fff',
     padding: 20,
     borderRadius: 10,
@@ -126,7 +128,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 5,
-    alignItems: 'center', // Centraliza o conteúdo interno
+    alignItems: 'center', 
   },
   title: {
     fontSize: 24,
@@ -136,7 +138,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   input: {
-    width: '100%', // Ocupa toda a largura do container
+    width: '100%',
     height: 45,
     borderColor: '#ccc',
     borderWidth: 1,
@@ -150,7 +152,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#007bff',
     paddingVertical: 12,
     borderRadius: 5,
-    width: '100%', // Ocupa toda a largura do container
+    width: '100%',
     alignItems: 'center',
     marginTop: 20,
   },
